@@ -42,9 +42,9 @@
         <q-separator />
 
         <q-card-actions vertical>
-          <q-btn color="brown-4" push @click="addNewItem"
-            >Add Item to List</q-btn
-          >
+          <q-btn color="brown-4" push @click="addNewItem">
+            Add Item to List
+          </q-btn>
         </q-card-actions>
       </q-card>
 
@@ -102,11 +102,11 @@
       </q-list>
     </div>
 
-    <Teleport to="#appFooter">
-      <q-btn class="full-width" color="primary" size="lg" push
-        >Submit List</q-btn
-      >
-    </Teleport>
+    <teleport to="#appFooter">
+      <q-btn class="full-width" color="primary" size="lg" push>
+        Submit List
+      </q-btn>
+    </teleport>
   </q-page>
 </template>
 
@@ -125,27 +125,29 @@ const items: Ref<Item[]> = ref([
 const todos = ref<Job[]>([
   {
     value: 1,
-    label: 'ct1',
+    label: 'Manteca',
   },
   {
     value: 2,
-    label: 'ct2',
+    label: 'Sacramento',
   },
   {
     value: 3,
-    label: 'ct3',
+    label: 'Mountain View',
   },
   {
     value: 4,
-    label: 'ct4',
+    label: 'San Francisco',
   },
   {
     value: 5,
-    label: 'ct5',
+    label: 'San Jose',
   },
 ]);
 
 const addNewItem = () => {
+  if (newItem.value.label === '') return;
+
   items.value.push(newItem.value);
   newItem.value = { label: '', amount: 0 };
 };
