@@ -5,17 +5,17 @@
         v-model="selectedJob"
         :options="todos"
         option-label="label"
-        label="Select Job Site"
+        label="Select Location / Lugar"
         rounded
         outlined
       ></q-select>
 
-      <q-card flat bordered class="my-card">
+      <q-card flat bordered>
         <q-card-section>
-          <div class="text-h6">Item Name</div>
+          <div class="text-h6">Item Name / Nombre</div>
           <q-input
             v-model="newItem.label"
-            placeholder="Name here"
+            placeholder="Name / Nombre"
             outlined
             rounded
             dense
@@ -25,7 +25,7 @@
         <q-separator inset />
 
         <q-card-section>
-          <div class="text-h6">Add Item</div>
+          <div class="text-h6">Amount / Cantidad</div>
           <div class="row justify-evenly items-center q-py-sm">
             <q-btn icon="remove" push round @click="newItem.amount--"></q-btn>
             <!-- <q-input
@@ -43,7 +43,7 @@
 
         <q-card-actions vertical>
           <q-btn color="brown-4" push @click="addNewItem">
-            Add Item to List
+            Add Item to List / Agregar a la Lista
           </q-btn>
         </q-card-actions>
       </q-card>
@@ -63,10 +63,10 @@
         >
           <q-card>
             <q-card-section>
-              <div class="text-h6">Item Name</div>
+              <div class="text-h6">Item Name / Nombre</div>
               <q-input
                 v-model="item.label"
-                placeholder="Name here"
+                placeholder="Name / Nombre"
                 outlined
                 rounded
                 dense
@@ -76,7 +76,7 @@
             <q-separator inset />
 
             <q-card-section>
-              <div class="text-h6">Add Item</div>
+              <div class="text-h6">Amount / Cantidad</div>
               <div class="row justify-evenly items-center q-py-sm">
                 <q-btn icon="remove" push round @click="item.amount--"></q-btn>
                 <!-- <q-input
@@ -94,7 +94,7 @@
 
             <q-card-actions vertical>
               <q-btn color="red-4" push @click="removeItem(index)">
-                Remove Item
+                Remove Item / Eliminar
               </q-btn>
             </q-card-actions>
           </q-card>
@@ -108,7 +108,7 @@
       class="bg-white text-primary q-pa-sm row justify-center"
     >
       <q-btn class="full-width" color="primary" size="lg" push>
-        Submit List
+        Submit List / Mandar Lista
       </q-btn>
     </q-footer>
   </q-page>
