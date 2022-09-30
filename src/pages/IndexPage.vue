@@ -8,60 +8,7 @@
         label="Select Location / Lugar"
         outlined
       ></q-select>
-
-      <!-- <q-card flat bordered>
-        <q-card-section>
-          <div class="text-h6">Item Name / Nombre</div>
-          <q-input
-            v-model="newItem.label"
-            placeholder="Name / Nombre"
-            outlined
-            rounded
-            dense
-          />
-        </q-card-section>
-
-        <q-separator inset />
-
-        <q-card-section>
-          <div class="text-h6">Amount / Cantidad</div>
-          <div class="row q-py-sm q-col-gutter-sm">
-            <div class="col-6">
-              <q-input
-                v-model="newItem.amount"
-                outlined
-                rounded
-                dense
-              ></q-input>
-            </div>
-            <div class="col-6">
-              <q-select
-                v-model="newItem.type"
-                :options="[
-                  { value: 'ft', label: 'Feet' },
-                  { value: 'in', label: 'Inche(s)' },
-                  { value: 'rolls', label: 'Roll(s)' },
-                  { value: 'pipes', label: 'Pipe(s)' },
-                ]"
-                label="Type / Tipo"
-                outlined
-                rounded
-                dense
-              ></q-select>
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions vertical>
-          <q-btn color="brown-4" push @click="addNewItem">
-            Add Item to List / Agregar a la Lista
-          </q-btn>
-        </q-card-actions>
-      </q-card> -->
-
-      <q-list class="rounded-borders" bordered separator>
+      <q-list class="rounded-borders" bordered>
         <q-expansion-item
           label="Add New Item / Agregar Nuevo Item"
           expand-icon="add"
@@ -118,6 +65,8 @@
             </q-card-actions>
           </q-card>
         </q-expansion-item>
+      </q-list>
+      <q-list v-if="items.length" class="rounded-borders" bordered separator>
         <q-expansion-item
           v-for="(item, index) in items"
           :key="item.label"
@@ -158,17 +107,36 @@
           </q-card>
         </q-expansion-item>
       </q-list>
+
+      <q-list class="rounded-borders" bordered>
+        <q-expansion-item label="Options / Opciones" expand-icon="settings">
+          <q-card>
+            <q-separator />
+
+            <q-card-actions vertical>
+              <q-btn color="red-5" push @click="removeAllItems">
+                Remove All Items / Eliminar Todo
+              </q-btn>
+            </q-card-actions>
+          </q-card>
+        </q-expansion-item>
+      </q-list>
     </div>
 
-    <q-footer
-      v-if="items.length"
-      bordered
-      class="bg-white text-primary q-pa-sm row justify-center"
+    <transition
+      enter-active-class="animated slideInUp"
+      leave-active-class="animated slideOutDown"
     >
-      <q-btn class="full-width" color="primary" size="lg" push>
-        Submit List / Mandar Lista
-      </q-btn>
-    </q-footer>
+      <q-footer
+        v-if="items.length"
+        bordered
+        class="bg-white text-primary q-pa-sm row justify-center"
+      >
+        <q-btn class="full-width" color="primary" size="lg" push>
+          Submit List / Mandar Lista
+        </q-btn>
+      </q-footer>
+    </transition>
   </q-page>
 </template>
 
@@ -243,6 +211,9 @@ const addNewItem = () => {
 
 const removeItem = (index: number) => {
   items.value.splice(index, 1);
+};
+const removeAllItems = () => {
+  items.value = [];
 };
 
 const newItemEdit = () => {
