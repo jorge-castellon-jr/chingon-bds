@@ -26,12 +26,6 @@
         />
       </q-list>
     </q-drawer> -->
-    <q-footer
-      bordered
-      class="bg-white text-primary q-pa-sm row justify-center"
-      id="appFooter"
-    >
-    </q-footer>
 
     <q-page-container>
       <router-view />

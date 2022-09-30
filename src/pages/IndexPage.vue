@@ -102,11 +102,11 @@
       </q-list>
     </div>
 
-    <teleport to="#appFooter">
+    <q-footer bordered class="bg-white text-primary q-pa-sm row justify-center">
       <q-btn class="full-width" color="primary" size="lg" push>
         Submit List
       </q-btn>
-    </teleport>
+    </q-footer>
   </q-page>
 </template>
 
