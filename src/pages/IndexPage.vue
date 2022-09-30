@@ -1,5 +1,5 @@
 <template>
-  <q-page class="row q-mt-lg justify-evenly q-mx-auto" style="max-width: 600px">
+  <q-page class="row q-pt-lg justify-evenly q-mx-auto" style="max-width: 600px">
     <div class="col q-gutter-lg">
       <q-select
         v-model="selectedJob"
@@ -102,7 +102,11 @@
       </q-list>
     </div>
 
-    <q-footer bordered class="bg-white text-primary q-pa-sm row justify-center">
+    <q-footer
+      v-if="items.length"
+      bordered
+      class="bg-white text-primary q-pa-sm row justify-center"
+    >
       <q-btn class="full-width" color="primary" size="lg" push>
         Submit List
       </q-btn>
@@ -115,7 +119,7 @@ import { Job, Item } from 'components/models';
 import { Ref, ref } from 'vue';
 
 const selectedJob = ref([]);
-const newItem: Ref<Item> = ref({ label: '', amount: 0 });
+const newItem: Ref<Item> = ref({ label: '', amount: 1 });
 const items: Ref<Item[]> = ref([
   { label: 'Item 1', amount: 1 },
   { label: 'Item 2', amount: 2 },
@@ -149,7 +153,7 @@ const addNewItem = () => {
   if (newItem.value.label === '') return;
 
   items.value.push(newItem.value);
-  newItem.value = { label: '', amount: 0 };
+  newItem.value = { label: '', amount: 1 };
 };
 
 const removeItem = (index: number) => {
