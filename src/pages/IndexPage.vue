@@ -163,13 +163,13 @@ const items: Ref<Item[]> = ref([
     label: 'Item 1',
     amount: 1,
     editing: false,
-    type: { value: '', label: '' },
+    type: { value: 'roll', label: 'Roll' },
   },
   {
     label: 'Item 2',
     amount: 2,
     editing: false,
-    type: { value: '', label: '' },
+    type: { value: 'pipes', label: 'Pipes' },
   },
   {
     label: 'Item 3',
@@ -278,7 +278,7 @@ const notifyError = (err: string) => {
   Notify.create({
     message: 'Error: ' + err,
     color: 'negative',
-    position: 'bottom',
+    position: 'center',
     timeout: 3000,
   });
 };
