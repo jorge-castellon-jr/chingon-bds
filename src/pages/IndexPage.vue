@@ -3,7 +3,7 @@
     <div class="col q-gutter-lg">
       <q-select
         v-model="selectedJob"
-        :options="todos"
+        :options="jobs"
         option-label="label"
         label="Select Location / Lugar"
         outlined
@@ -112,6 +112,50 @@
         <q-expansion-item label="Options / Opciones" expand-icon="settings">
           <q-card>
             <q-separator />
+            <q-card-section>
+              <div class="text-h6">Add Phone Number / Agregar Numero</div>
+              <q-input
+                outlined
+                rounded
+                v-model="phone"
+                mask="(###) ### - ####"
+                placeholder="(###) ### - ####"
+                dense
+              />
+
+              <q-list>
+                <q-item
+                  v-for="(item, index) in phoneList"
+                  :key="item"
+                  class="row"
+                  dense
+                >
+                  <div class="col items-center">- {{ item }}</div>
+                  <div class="col-auto">
+                    <q-btn
+                      icon="delete"
+                      color="red-4"
+                      size="sm"
+                      @click="removePhone(index)"
+                    />
+                  </div>
+                </q-item>
+              </q-list>
+            </q-card-section>
+
+            <q-separator inset />
+
+            <q-card-section>
+              <q-btn
+                class="full-width"
+                color="brown-5"
+                icon="add"
+                push
+                @click="addPhone"
+              />
+            </q-card-section>
+
+            <q-separator />
 
             <q-card-actions vertical>
               <q-btn color="red-5" push @click="removeAllItems">
@@ -179,7 +223,7 @@ const items: Ref<Item[]> = ref([
   },
 ]);
 
-const todos = ref<Job[]>([
+const jobs = ref<Job[]>([
   {
     value: 1,
     label: 'Manteca',
@@ -201,6 +245,20 @@ const todos = ref<Job[]>([
     label: 'San Jose',
   },
 ]);
+
+const phone = ref('');
+const phoneList = ref<string[]>([]);
+
+const addPhone = () => {
+  if (phone.value) {
+    phoneList.value.push(phone.value);
+    phone.value = '';
+  }
+};
+
+const removePhone = (index: number) => {
+  phoneList.value.splice(index, 1);
+};
 
 const addNewItem = () => {
   if (newItem.value.label === '') return;
@@ -238,7 +296,10 @@ ${items.value
   .map((item) => `${item.amount} ${item.type?.value} x ${item.label}`)
   .join('\n')}
     `,
-    recipients: '+19165822335',
+    recipients:
+      '+19165822335' +
+      (phoneList.value.length ? ',' : '') +
+      phoneList.value.map((phone) => phone.replace(/\D/g, '')).join(',+1'),
   };
 
   fetch('https://sms-notifications-4375-u8hqok.twil.io/send-messages', {
