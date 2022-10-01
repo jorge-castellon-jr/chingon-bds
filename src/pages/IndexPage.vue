@@ -115,11 +115,12 @@
             <q-card-section>
               <div class="text-h6">Add Phone Number / Agregar Numero</div>
               <q-input
-                outlined
-                rounded
                 v-model="phone"
+                pattern="\d*"
                 mask="(###) ### - ####"
                 placeholder="(###) ### - ####"
+                outlined
+                rounded
                 dense
               />
 
