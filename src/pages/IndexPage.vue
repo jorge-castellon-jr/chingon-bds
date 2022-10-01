@@ -132,7 +132,13 @@
         bordered
         class="bg-white text-primary q-pa-sm row justify-center"
       >
-        <q-btn class="full-width" color="primary" size="lg" push>
+        <q-btn
+          class="full-width"
+          color="primary"
+          size="lg"
+          push
+          @click="sendMessage"
+        >
           Submit List / Mandar Lista
         </q-btn>
       </q-footer>
@@ -143,8 +149,9 @@
 <script setup lang="ts">
 import { Job, Item } from 'components/models';
 import { Ref, ref } from 'vue';
+import { Notify } from 'quasar';
 
-const selectedJob = ref([]);
+const selectedJob: Ref<Job> | Ref<null> = ref(null);
 const newItem: Ref<Item> = ref({
   label: '',
   amount: 1,
@@ -218,5 +225,69 @@ const removeAllItems = () => {
 
 const newItemEdit = () => {
   newItem.value.editing = !newItem.value.editing;
+};
+
+const sendMessage = () => {
+  const data = {
+    passcode: '123456',
+    message: `
+    Location: ${selectedJob.value?.label}
+Date: ${new Date().toLocaleDateString()}
+Items:
+${items.value
+  .map((item) => `${item.amount} ${item.type?.value} x ${item.label}`)
+  .join('\n')}
+    `,
+    recipients: '+19165822335',
+  };
+
+  fetch('https://sms-notifications-4375-u8hqok.twil.io/send-messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  })
+    .then((resp) => {
+      if (resp.ok) {
+        return resp.json();
+      }
+
+      if (resp.status === 401) {
+        notifyError('Unauthorized');
+        throw new Error('Invalid Passcode');
+      } else {
+        notifyError('Error');
+        throw new Error(
+          'Unexpected error. Please check the logs for what went wrong.'
+        );
+      }
+    })
+    .then((body) => {
+      console.log(body);
+      removeAllItems();
+      notifySuccess('Sent messages. Check logs for details');
+    })
+    .catch((err) => {
+      console.log(err);
+      notifyError(err.message);
+    });
+};
+
+const notifyError = (err: string) => {
+  Notify.create({
+    message: 'Error: ' + err,
+    color: 'negative',
+    position: 'bottom',
+    timeout: 3000,
+  });
+};
+const notifySuccess = (message: string) => {
+  Notify.create({
+    message,
+    color: 'positive',
+    position: 'bottom',
+    timeout: 3000,
+  });
 };
 </script>
