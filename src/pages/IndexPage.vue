@@ -227,6 +227,7 @@
           class="full-width"
           color="primary"
           size="lg"
+          :loading="loading"
           push
           @click="sendMessage"
         >
@@ -242,6 +243,7 @@ import { Job, Item } from 'components/models';
 import { Ref, ref } from 'vue';
 import { Notify } from 'quasar';
 
+const loading = ref(false);
 const selectedJob: Ref<Job> | Ref<any> = ref(null);
 const sender = ref('');
 const newItem: Ref<Item> = ref({
@@ -352,6 +354,8 @@ const sendMessage = () => {
     notifyError('Please add items / Por favor agregue items');
     return;
   }
+
+  loading.value = true;
   const data = {
     passcode: '123456',
     message: `
@@ -403,6 +407,7 @@ ${items.value
 };
 
 const notifyError = (err: string) => {
+  loading.value = false;
   Notify.create({
     message: 'Error: ' + err,
     color: 'red-5',
@@ -412,6 +417,7 @@ const notifyError = (err: string) => {
   });
 };
 const notifySuccess = (message: string) => {
+  loading.value = false;
   Notify.create({
     message,
     color: 'positive',
