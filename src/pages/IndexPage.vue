@@ -8,6 +8,23 @@
         label="Select Location / Lugar"
         outlined
       ></q-select>
+
+      <q-card v-if="selectedJob" flat bordered>
+        <q-card-section>
+          <div class="text-h6">Who's Sending</div>
+          <template v-if="selectedJob.senders.length">
+            <q-radio
+              v-for="senderOption in selectedJob.senders"
+              :key="senderOption"
+              v-model="sender"
+              :val="senderOption"
+              :label="senderOption"
+            />
+          </template>
+          <div v-else class="text-caption">No Senders available</div>
+        </q-card-section>
+      </q-card>
+
       <q-list class="rounded-borders" bordered>
         <q-expansion-item
           label="Add New Item / Agregar Nuevo Item"
@@ -16,13 +33,41 @@
           <q-card>
             <q-card-section>
               <div class="text-h6">Item Name / Nombre</div>
-              <q-input
+              <!-- <q-input
                 v-model="newItem.label"
                 placeholder="Name / Nombre"
                 outlined
                 rounded
                 dense
-              />
+              /> -->
+              <div class="row q-py-sm q-col-gutter-sm">
+                <div class="col-7">
+                  <q-input
+                    v-model="newItem.label"
+                    placeholder="Name / Nombre"
+                    outlined
+                    rounded
+                    dense
+                  />
+                </div>
+                <div class="col-5">
+                  <q-select
+                    v-model="newItem.material"
+                    :options="[
+                      'Copper',
+                      'PEX',
+                      'PVC',
+                      'ABS',
+                      'Castiron',
+                      'Galvanized',
+                    ]"
+                    label="Material"
+                    outlined
+                    rounded
+                    dense
+                  ></q-select>
+                </div>
+              </div>
             </q-card-section>
 
             <q-separator inset />
@@ -30,15 +75,16 @@
             <q-card-section>
               <div class="text-h6">Amount / Cantidad</div>
               <div class="row q-py-sm q-col-gutter-sm">
-                <div class="col-6">
+                <div class="col-7">
                   <q-input
                     v-model="newItem.amount"
+                    pattern="\d*"
                     outlined
                     rounded
                     dense
                   ></q-input>
                 </div>
-                <div class="col-6">
+                <div class="col-5">
                   <q-select
                     v-model="newItem.type"
                     :options="[
@@ -70,7 +116,7 @@
         <q-expansion-item
           v-for="(item, index) in items"
           :key="item.label"
-          :label="`${item.amount} ${item.type?.value} x ${item.label}`"
+          :label="`${item.amount} ${item.type?.value} x ${item.material} ${item.label}`"
           expand-icon="edit"
         >
           <q-card>
@@ -196,12 +242,14 @@ import { Job, Item } from 'components/models';
 import { Ref, ref } from 'vue';
 import { Notify } from 'quasar';
 
-const selectedJob: Ref<Job> | Ref<null> = ref(null);
+const selectedJob: Ref<Job> | Ref<any> = ref(null);
+const sender = ref('');
 const newItem: Ref<Item> = ref({
   label: '',
   amount: 1,
   editing: false,
   type: null,
+  material: '',
 });
 const items: Ref<Item[]> = ref([
   {
@@ -209,18 +257,21 @@ const items: Ref<Item[]> = ref([
     amount: 1,
     editing: false,
     type: { value: 'roll', label: 'Roll' },
+    material: 'PEX',
   },
   {
     label: 'Item 2',
     amount: 2,
     editing: false,
     type: { value: 'pipes', label: 'Pipes' },
+    material: 'PVC',
   },
   {
     label: 'Item 3',
     amount: 3,
     editing: false,
     type: { value: 'ft', label: 'Feet' },
+    material: 'ABS',
   },
 ]);
 
@@ -228,22 +279,27 @@ const jobs = ref<Job[]>([
   {
     value: 1,
     label: 'Manteca',
+    senders: ['John Doe', 'Jane Doe'],
   },
   {
     value: 2,
     label: 'Sacramento',
+    senders: ['John Doe', 'Jane Doe'],
   },
   {
     value: 3,
     label: 'Mountain View',
+    senders: ['John Doe', 'Jane Doe'],
   },
   {
     value: 4,
     label: 'San Francisco',
+    senders: ['John Doe', 'Jane Doe'],
   },
   {
     value: 5,
     label: 'San Jose',
+    senders: [],
   },
 ]);
 
@@ -272,6 +328,7 @@ const addNewItem = () => {
     amount: 1,
     editing: false,
     type: null,
+    material: '',
   };
 };
 
@@ -282,15 +339,24 @@ const removeAllItems = () => {
   items.value = [];
 };
 
-const newItemEdit = () => {
-  newItem.value.editing = !newItem.value.editing;
-};
-
 const sendMessage = () => {
+  if (selectedJob.value === null) {
+    notifyError('Please select a job / Por favor seleccione un trabajo');
+    return;
+  }
+  if (sender.value === '' && selectedJob.value.senders.length !== 0) {
+    notifyError('Please select a sender / Por favor seleccione un remitente');
+    return;
+  }
+  if (items.value.length === 0) {
+    notifyError('Please add items / Por favor agregue items');
+    return;
+  }
   const data = {
     passcode: '123456',
     message: `
     Location: ${selectedJob.value?.label}
+Sender: ${sender.value}
 Date: ${new Date().toLocaleDateString()}
 Items:
 ${items.value
@@ -339,8 +405,9 @@ ${items.value
 const notifyError = (err: string) => {
   Notify.create({
     message: 'Error: ' + err,
-    color: 'negative',
+    color: 'red-5',
     position: 'center',
+    icon: 'error',
     timeout: 3000,
   });
 };
