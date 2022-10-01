@@ -72,7 +72,6 @@
           :key="item.label"
           :label="`${item.amount} ${item.type?.value} x ${item.label}`"
           expand-icon="edit"
-          expand-icon-toggle
         >
           <q-card>
             <q-card-section>
@@ -124,7 +123,7 @@
                 dense
               />
 
-              <q-list>
+              <q-list v-if="phoneList.length" class="q-pt-sm">
                 <q-item
                   v-for="(item, index) in phoneList"
                   :key="item"
@@ -137,6 +136,7 @@
                       icon="delete"
                       color="red-4"
                       size="sm"
+                      push
                       @click="removePhone(index)"
                     />
                   </div>
